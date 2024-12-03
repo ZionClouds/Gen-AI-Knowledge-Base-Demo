@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextField, Typography, Box, Card, CardContent, CardActions } from '@mui/material';
+import { Button, TextField, Typography, Box, Card, CardContent, CircularProgress } from '@mui/material';
 import { styled } from '@mui/system';
 import axios from 'axios';
 // Assuming you have these images in the src/assets/icons folder
@@ -22,12 +22,16 @@ const GradientButton = styled(Button)({
 const AskQuestionSection = () => {
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleAskQuestion = async () => {
     if (!question) {
       alert('Please enter a question first');
       return;
     }
+
+    setLoading(true); // Start loading
+    setAnswer(''); // Clear previous answer
 
     try {
       const response = await axios.post('/ask', { question }, {
@@ -37,6 +41,8 @@ const AskQuestionSection = () => {
       setAnswer(response.data.answer || response.data.error);
     } catch (error) {
       alert('Error asking question.');
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
 
@@ -62,32 +68,52 @@ const AskQuestionSection = () => {
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           sx={{ width: { xs: '100%', md: '50%' } }}
+          disabled={loading} // Disable input while loading
         />
 
         {/* Gradient Submit Button */}
         <GradientButton
           variant="contained"
           onClick={handleAskQuestion}
-          endIcon={<img src={askIcon} alt="ask" style={{ width: '36px', height: '36px', filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))' }} />}
+          disabled={loading} // Disable button while loading
+          endIcon={
+            loading ? (
+              <CircularProgress size={24} color="inherit" /> // Loading spinner
+            ) : (
+              <img
+                src={askIcon}
+                alt="ask"
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5))'
+                }}
+              />
+            )
+          }
         >
-          Submit Question
+          {loading ? 'Submitting...' : 'Submit Question'}
         </GradientButton>
       </Box>
 
       {answer && (
         <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
-          <Card sx={{ width: { xs: '95%', md: '95%' }, mx: 'auto', boxShadow: '0 6px 12px rgba(0, 0, 0, 0.2)', borderRadius: '16px' }}>
+          <Card
+            sx={{
+              width: { xs: '95%', md: '95%' },
+              mx: 'auto',
+              boxShadow: '0 6px 12px rgba(0, 0, 0, 0.2)',
+              borderRadius: '16px'
+            }}
+          >
             <CardContent>
-              <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold',textAlign: 'start'  }}>
+              <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold', textAlign: 'start' }}>
                 Answer:
               </Typography>
               <Typography variant="body1" sx={{ textAlign: 'start' }}>
                 {answer}
               </Typography>
             </CardContent>
-            <CardActions sx={{ justifyContent: 'flex-end', pr: 2 }}>
-              {/* Add any additional actions here if needed */}
-            </CardActions>
           </Card>
         </Box>
       )}
