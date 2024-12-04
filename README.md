@@ -8,7 +8,7 @@ for building specialized AI applications.
 ---
 
 <!-- ## Click Deploy -->
-<a href="https://deploy-new-project-848342910896.us-central1.run.app?project_name=Gen-AI-Knowledge-Base-Demo" target="_blank">
+<a href="https://deploy-new-project-848342910896.us-central1.run.app?project_name=Gen-AI-Knowledge-Base-Demo&workflow=deploy.yml" target="_blank">
   <img src="https://img.shields.io/badge/Deploy-Solution-brightgreen" alt="Deploy Solution">
 </a>
 
