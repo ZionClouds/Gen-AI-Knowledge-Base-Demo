@@ -34,6 +34,14 @@ sum_bucket_name = "zionai-docs-devops-team-nonprod-svc-hw9w-cbd069"
 app = Flask(__name__, static_folder='build', template_folder='build')
 CORS(app)  # Enable CORS for cross-origin resource sharing
 
+@app.after_request
+def add_cors_headers(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+    return response
+
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_frontend(path=''):
