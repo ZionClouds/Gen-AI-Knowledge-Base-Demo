@@ -47,27 +47,36 @@ const UploadSection = () => {
   const [file, setFile] = useState(null);
 
   const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
+    const selectedFile = event.target.files[0];
+    console.log('Selected File:', selectedFile);
+    setFile(selectedFile);
   };
+  
 
   const handleUpload = async () => {
     if (!file) {
       alert("Please select a file first.");
       return;
     }
-
+  
     const formData = new FormData();
-    formData.append('file', file);
-
+    formData.append("file", file);
+  
+    // Debugging: Log FormData contents
+    for (let [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+  
     try {
-      const response = await axios.post('/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const response = await axios.post("/upload", formData);
+      console.log(response);
       alert(response.data.message || response.data.error);
     } catch (error) {
+      console.error("Upload error:", error.response);
       alert("Error uploading the file.");
     }
   };
+  
 
   return (
     <Box sx={{ my: 4, textAlign: 'center' }}>

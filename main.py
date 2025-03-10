@@ -151,14 +151,31 @@ def get_document_text(filename: str, page_number: int) -> str:
 #     # Render the HTML page
 #     return render_template('index.html')
 
+# @app.route('/upload', methods=['POST'])
+# def upload_file():
+#     file = request.files['file']
+#     print(file.filename)
+#     if file:
+#         blob = storage_client.bucket(bucket_name).blob(file.filename)
+#         blob.upload_from_file(file, content_type='application/pdf')
+#         return jsonify({"message": f"File {file.filename} uploaded successfully"}), 200
+#     return jsonify({"error": "File upload failed"}), 400
+
 @app.route('/upload', methods=['POST'])
 def upload_file():
+    print("Files received:", request.files)
+    if 'file' not in request.files:
+        return jsonify({"error": "No file uploaded"}), 400
+
     file = request.files['file']
-    if file:
-        blob = storage_client.bucket(bucket_name).blob(file.filename)
-        blob.upload_from_file(file, content_type='application/pdf')
-        return jsonify({"message": f"File {file.filename} uploaded successfully"}), 200
-    return jsonify({"error": "File upload failed"}), 400
+    print("File name:", file.filename)
+    if file.filename == '':
+        return jsonify({"error": "File name is empty"}), 400
+
+    blob = storage_client.bucket(bucket_name).blob(file.filename)
+    blob.upload_from_file(file, content_type='application/pdf')
+    return jsonify({"message": f"File {file.filename} uploaded successfully"}), 200
+
 
 @app.route('/delete', methods=['POST'])
 def delete_file():
