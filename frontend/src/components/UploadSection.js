@@ -60,7 +60,7 @@ const UploadSection = () => {
     formData.append('file', file);
 
     try {
-      const response = await axios.post('/upload', formData, {
+      const response = await axios.post('https://knowledge-base-app-848342910896.us-central1.run.app/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       alert(response.data.message || response.data.error);
